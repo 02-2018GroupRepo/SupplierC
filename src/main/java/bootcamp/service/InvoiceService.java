@@ -19,8 +19,6 @@ public class InvoiceService {
 	// pay for stuff
 	
 	
-	// 
-	
 	
 
 }

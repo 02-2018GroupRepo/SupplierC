@@ -1,5 +1,6 @@
 package bootcamp.service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,11 +19,16 @@ public class InventoryService {
 	@Autowired
 	private List<Product> inventoryList;
 	private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
-	 
+	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
+		
 	 @Autowired
 	 private SimpleDateFormat dateFormat;
 	
 	public void receiveInventory(List<Product> products) {
+		//set retail price
+		for (Product p : products) {
+			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
+		}
 		inventoryList.addAll(products);
 	}
 
