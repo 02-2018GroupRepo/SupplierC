@@ -25,10 +25,12 @@ public class InventoryService {
 	 private SimpleDateFormat dateFormat;
 	
 	public void receiveInventory(List<Product> products) {
+		/* 
 		//set retail price
 		for (Product p : products) {
 			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
 		}
+		*/
 		inventoryList.addAll(products);
 	}
 

@@ -13,7 +13,6 @@ class InventoryServiceSpec extends Specification {
 		InventoryService inventoryService = new InventoryService()
 		
 		and: "an empty inventory list"
-		
 		inventoryService.inventoryList = new ArrayList<Product>();
 		
 		and: "A list of 1 product"
