@@ -15,11 +15,13 @@ import bootcamp.model.products.Product;
 public class ProductDao {
 	
 	private final String GET_PRODUCTS = "SELECT id, name, description, retail_price, wholesale_price FROM product";
-    private final String GET_PRODUCT_BY_ID_SQL = GET_PRODUCTS + " where id = ?";
     private final String GET_PRODUCT_PRICE = "SELECT retail_price FROM product where id = ?";
 	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
-
     
+	private final String WHERE_ID = " where id = ?";
+	private final String GET_PRODUCT_BY_ID_SQL = GET_PRODUCTS + WHERE_ID;
+    private final String UPDATE_PRODUCT_PRICE = "UPDATE product SET retail_price=?, wholesale_price=?";
+	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
@@ -35,6 +37,13 @@ public class ProductDao {
 	
 	public Product getProductById(Integer id) {
 		return jdbcTemplate.queryForObject(GET_PRODUCT_BY_ID_SQL, new Object[] {id}, new BeanPropertyRowMapper<>(Product.class));
+	}
+	
+	public void updateProductPrice(List<Product> products) {
+		for (Product p : products) {
+			jdbcTemplate.update(UPDATE_PRODUCT_PRICE + WHERE_ID, new Object[] {p.getRetail_price().multiply(retailMultiplier), p.getRetail_price(), p.getId()});
+//			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
+		}
 	}
 	
 	public List<String> getListOfThings(){

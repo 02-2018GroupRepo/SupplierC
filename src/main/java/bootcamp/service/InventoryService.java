@@ -18,19 +18,28 @@ import bootcamp.model.products.Product;
 
 @Component
 public class InventoryService {
-	
-	@Autowired
-	//private List<Product> inventoryList;
+
 	private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
-	ProductDao productDao = new ProductDao();	
-	
-	 @Autowired
-	 private SimpleDateFormat dateFormat;
-	 @Autowired
-	 private InventoryDao inventoryDao;
+		
+//	@Autowired
+//	private List<Product> inventoryList;
+//	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
+		
+	@Autowired
+	private SimpleDateFormat dateFormat;
+	@Autowired
+	private InventoryDao inventoryDao;
+	@Autowired
+	private ProductDao productDao;
 	
 	public void receiveInventory(List<Product> products) {
-		productDao.updateProductList(products);
+		/* 
+		//set retail price
+		for (Product p : products) {
+			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
+		}
+		*/
+		productDao.updateProductPrice(products);
 		inventoryDao.addToInventory(products);
 	}
 
