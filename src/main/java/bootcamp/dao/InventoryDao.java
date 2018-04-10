@@ -1,5 +1,6 @@
 package bootcamp.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class InventoryDao {
 	private final String INSERT_INVENTORY = "INSERT INTO inventory VALUES (?,?)";
 	private final String UPDATE_INVENTORY = "UPDATE inventory SET number_available=?";
 	private final String WHERE_INVENTORY = " WHERE id=?";
+	private final String QUANT_INVENTORY = "SELECT number_available FROM inventory WHERE id=?";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -50,9 +52,11 @@ public class InventoryDao {
 			check = jdbcTemplate.queryForList(GET_ID_INVENTORY, Integer.class);
 			System.out.println(check);
 			if(check.contains(products.get(i).getId())) {
-				jdbcTemplate.update(UPDATE_INVENTORY + WHERE_INVENTORY, new Object[] {99, products.get(i).getId()});
+				jdbcTemplate.update(UPDATE_INVENTORY 
+						+ WHERE_INVENTORY, new Object[] {99, products.get(i).getId()});
 			} else {
-				jdbcTemplate.update(INSERT_INVENTORY, new Object[] {products.get(i).getId(), 99});
+				jdbcTemplate.update(INSERT_INVENTORY, 
+						new Object[] {products.get(i).getId(), 99});
 			}
 		}
 	}

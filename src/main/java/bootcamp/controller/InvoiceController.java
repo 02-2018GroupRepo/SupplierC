@@ -2,10 +2,13 @@ package bootcamp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import bootcamp.model.invoice.Invoice;
+import bootcamp.model.order.Order;
 import bootcamp.service.InventoryService;
 import bootcamp.service.InvoiceService;
 
@@ -41,5 +44,11 @@ public class InvoiceController {
 		invoiceService.pay(cash);
 	}
 	
+	// get an order from vendor
+	@RequestMapping("/order")
+	@ResponseBody
+	public Invoice order(@RequestBody Order order) {
+		return invoiceService.order(order);
+	}
 	
 }

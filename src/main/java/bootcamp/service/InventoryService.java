@@ -1,6 +1,5 @@
 package bootcamp.service;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import bootcamp.dao.InventoryDao;
+import bootcamp.dao.ProductDao;
 import bootcamp.model.inventory.Inventory;
 import bootcamp.model.inventory.InventoryValue;
 import bootcamp.model.products.Product;
@@ -20,22 +20,17 @@ import bootcamp.model.products.Product;
 public class InventoryService {
 	
 	@Autowired
-	private List<Product> inventoryList;
+	//private List<Product> inventoryList;
 	private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
-	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
-		
+	ProductDao productDao = new ProductDao();	
+	
 	 @Autowired
 	 private SimpleDateFormat dateFormat;
 	 @Autowired
 	 private InventoryDao inventoryDao;
 	
 	public void receiveInventory(List<Product> products) {
-		/* 
-		//set retail price
-		for (Product p : products) {
-			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
-		}
-		*/
+		productDao.updateProductList(products);
 		inventoryDao.addToInventory(products);
 	}
 

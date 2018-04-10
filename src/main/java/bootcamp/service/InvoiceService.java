@@ -4,24 +4,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import bootcamp.dao.ProductDao;
 import bootcamp.model.invoice.Invoice;
 import bootcamp.model.invoice.InvoiceItem;
+import bootcamp.model.order.Order;
 
 @Component
 public class InvoiceService {
 
 	@Autowired
+	InventoryService inventoryService;
+	@Autowired
+	ProductDao productDao;
+	
+	@Autowired
 	double cashOnHand;
 	
-	@Bean
+	@Bean //what annotation goes here to make this happen automatically??
 	public double setCashOnHand() {
-		cashOnHand = 5000d;
-		return cashOnHand;
+		return 5000d;
 	}
 	
 	@Bean
 	public double[] getOperatingCash() {
-		return new double[] {cashOnHand,0d};
+		return new double[] {cashOnHand, inventoryService.getInventoryValue()};
 	}
 	
 	
@@ -50,6 +56,14 @@ public class InvoiceService {
 	public void sendMoney(double cashGoingOut) {
 		cashOnHand -= cashGoingOut;
 		// pay the resupplier right here
+	}
+	
+	public Invoice order(Order order) {
+		Invoice invoice = new Invoice();
+		invoice.setId(order.getId());
+		invoice.setQuantity(order.getQuantity());
+		invoice.setTotal(productDao.getPriceOfProduct(order.getId()) * order.getQuantity());
+		return invoice;
 	}
 	
 	

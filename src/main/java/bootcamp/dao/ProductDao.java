@@ -1,5 +1,6 @@
 package bootcamp.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,10 @@ public class ProductDao {
 	
 	private final String GET_PRODUCTS = "SELECT id, name, description, retail_price, wholesale_price FROM product";
     private final String GET_PRODUCT_BY_ID_SQL = GET_PRODUCTS + " where id = ?";
-	
+    private final String GET_PRODUCT_PRICE = "SELECT retail_price FROM product where id = ?";
+	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
+
+    
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
@@ -40,5 +44,17 @@ public class ProductDao {
 	public List<Product> getListOfProducts(){
 		return items;
 	}
-
+	
+	// update product in table with new data call, set new retail price on the way in
+	public void updateProductList(List<Product> productList) { 
+		for (Product p : productList) {
+			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier)); //set new retail price
+		}
+	}
+	
+	public double getPriceOfProduct(int id) {
+		List<Double> temp = jdbcTemplate.queryForList(GET_PRODUCT_PRICE, new Object[] {id}, Double.class);
+		return temp.get(0);
+	}
+	
 }
