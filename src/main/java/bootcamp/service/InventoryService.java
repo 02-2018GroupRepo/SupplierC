@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import bootcamp.dao.InventoryDao;
+import bootcamp.dao.ProductDao;
 import bootcamp.model.inventory.Inventory;
 import bootcamp.model.inventory.InventoryValue;
 import bootcamp.model.products.Product;
@@ -19,15 +20,17 @@ import bootcamp.model.products.Product;
 @Component
 public class InventoryService {
 	
-	@Autowired
-	private List<Product> inventoryList;
+//	@Autowired
+//	private List<Product> inventoryList;
 	private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
-	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
+//	private static final BigDecimal retailMultiplier = new BigDecimal(2.5); 
 		
-	 @Autowired
-	 private SimpleDateFormat dateFormat;
-	 @Autowired
-	 private InventoryDao inventoryDao;
+	@Autowired
+	private SimpleDateFormat dateFormat;
+	@Autowired
+	private InventoryDao inventoryDao;
+	@Autowired
+	private ProductDao productDao;
 	
 	public void receiveInventory(List<Product> products) {
 		/* 
@@ -36,6 +39,7 @@ public class InventoryService {
 			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
 		}
 		*/
+		productDao.updateProductPrice(products);
 		inventoryDao.addToInventory(products);
 	}
 
