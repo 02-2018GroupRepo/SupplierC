@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import bootcamp.dao.InventoryDao;
+import bootcamp.model.inventory.Inventory;
+import bootcamp.model.inventory.InventoryValue;
 import bootcamp.model.products.Product;
 
 @Component
@@ -23,6 +26,8 @@ public class InventoryService {
 		
 	 @Autowired
 	 private SimpleDateFormat dateFormat;
+	 @Autowired
+	 private InventoryDao inventoryDao;
 	
 	public void receiveInventory(List<Product> products) {
 		/* 
@@ -31,11 +36,20 @@ public class InventoryService {
 			p.setRetail_price(p.getWholesale_price().multiply(retailMultiplier));
 		}
 		*/
-		inventoryList.addAll(products);
+		inventoryDao.addToInventory(products);
 	}
 
-	public List<Product> getInventory(){
-		return inventoryList;
+	public double getInventoryValue() {
+		double inven_value = 0.0;
+		List<InventoryValue> inventory = inventoryDao.getInventoryValue();
+		for(int i = 0; i < inventory.size(); i++) {
+			inven_value += inventory.get(i).getNumber_available() * inventory.get(i).getWholesale_price();
+		}
+		return inven_value;
+	}
+	
+	public Inventory getInventory() {
+		return inventoryDao.getInventory();
 	}
 	
 	@Scheduled(cron = "${inventory.status.schedule}")

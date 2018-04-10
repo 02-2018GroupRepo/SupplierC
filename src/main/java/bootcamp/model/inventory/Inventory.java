@@ -1,14 +1,23 @@
 package bootcamp.model.inventory;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory {
 	
-	ArrayList<InventoryItem> inventoryList = new ArrayList<>();
+	int id;
+	List<InventoryItem> items;
 	
-	
-	
-	public void addItemToList(InventoryItem item) {
-		inventoryList.add(item);
+	public int getId() {
+		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public List<InventoryItem> getItems() {
+		return items;
+	}
+	public void setItems(List<InventoryItem> items) {
+		this.items = items;
+	}
+	
 }
