@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriBuilder;
-
 import bootcamp.controller.InvoiceController;
 import bootcamp.dao.InventoryDao;
 import bootcamp.dao.ProductDao;
@@ -73,11 +71,10 @@ public class InvoiceService {
 	// for us to pay resuppliers
 	public void sendMoney(double cashGoingOut, int id) {
 		cashOnHand -= cashGoingOut;
-		StringBuilder uri = new StringBuilder();
-		uri.append("http://192.168.88.75:8080/payment/" + id);
+		String uri = "http://192.168.88.75:8080/payment/" + id;
 	
 		// pay the resupplier right here
-		invoiceController.payReSupply(uri.toString(), cashGoingOut, id);
+		invoiceController.payReSupply(uri, cashGoingOut, id);
 	}
 	
 	public Invoice order(Order order) {
