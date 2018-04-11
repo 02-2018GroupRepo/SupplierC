@@ -1,9 +1,14 @@
 package bootcamp.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriBuilder;
 
+import bootcamp.controller.InvoiceController;
+import bootcamp.dao.InventoryDao;
 import bootcamp.dao.ProductDao;
 import bootcamp.model.invoice.Invoice;
 import bootcamp.model.invoice.InvoiceItem;
@@ -16,9 +21,16 @@ public class InvoiceService {
 	InventoryService inventoryService;
 	@Autowired
 	ProductDao productDao;
+	@Autowired
+	InventoryDao inventoryDao;
 	
 	@Autowired
 	double cashOnHand;
+	
+	@Autowired
+	InvoiceController invoiceController;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Bean //what annotation goes here to make this happen automatically??
 	public double setCashOnHand() {
@@ -33,12 +45,18 @@ public class InvoiceService {
 	
 	// process invoice from resupplier, not for vendors
 	public void processInvoice(Invoice invoice) {
+		//if (invoice.)
+		
+		// get invoice total price
 		for (InvoiceItem i : invoice.getItems()) {
 			invoice.setTotal(invoice.getTotal()
-					+(i.getCount()*i.getProduct().getRetail_price().longValueExact()));
+					+(i.getCount()*i.getProduct().getRetail_price().doubleValue()));
 		}
+		log.info(String.valueOf(invoice.getTotal()));
+	
 		if (invoice.getTotal() <= cashOnHand) {
-			sendMoney(invoice.getTotal());
+			inventoryDao.setInvoice(invoice);
+			sendMoney(invoice.getTotal(), invoice.getId());
 		}
 		
 		else if (invoice.getTotal() > cashOnHand) {
@@ -48,14 +66,18 @@ public class InvoiceService {
 	}
 
 	//take in money from vendors
-	public void pay(double newMoney) {
+	public void payment(double newMoney) {
 		cashOnHand += newMoney;
 	}
 	
 	// for us to pay resuppliers
-	public void sendMoney(double cashGoingOut) {
+	public void sendMoney(double cashGoingOut, int id) {
 		cashOnHand -= cashGoingOut;
+		StringBuilder uri = new StringBuilder();
+		uri.append("http://192.168.88.75:8080/payment/" + id);
+	
 		// pay the resupplier right here
+		invoiceController.payReSupply(uri.toString(), cashGoingOut, id);
 	}
 	
 	public Invoice order(Order order) {
@@ -65,7 +87,5 @@ public class InvoiceService {
 		invoice.setTotal(productDao.getPriceOfProduct(order.getId()) * order.getQuantity());
 		return invoice;
 	}
-	
-	
 
 }

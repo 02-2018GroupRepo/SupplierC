@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import bootcamp.model.inventory.Inventory;
 import bootcamp.model.inventory.InventoryItem;
 import bootcamp.model.inventory.InventoryValue;
+import bootcamp.model.invoice.Invoice;
 import bootcamp.model.products.Product;
 
 @Component
@@ -33,6 +34,7 @@ public class InventoryDao {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	private Invoice invoice = new Invoice();
 	
 	public Inventory getInventory() {
 		List<InventoryItem> inven_item = jdbcTemplate.query(GET_INVENTORY, new BeanPropertyRowMapper<>(InventoryItem.class));
@@ -51,13 +53,29 @@ public class InventoryDao {
 		for(int i = 0; i < products.size(); i++) {
 			check = jdbcTemplate.queryForList(GET_ID_INVENTORY, Integer.class);
 			System.out.println(check);
+			int quantity = 0;
+			
+			for(int j = 0; j < invoice.getItems().size(); j++) {
+				if(products.get(i).getId() == invoice.getItems().get(i).getProduct().getId())
+					quantity = invoice.getItems().get(i).getCount();
+			}
+			
+			
 			if(check.contains(products.get(i).getId())) {
 				jdbcTemplate.update(UPDATE_INVENTORY 
-						+ WHERE_INVENTORY, new Object[] {99, products.get(i).getId()});
+						+ WHERE_INVENTORY, new Object[] {quantity, products.get(i).getId()});
 			} else {
 				jdbcTemplate.update(INSERT_INVENTORY, 
-						new Object[] {products.get(i).getId(), 99});
+						new Object[] {products.get(i).getId(), quantity});
 			}
 		}
+	}
+	
+	public Invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
 	}
 }
