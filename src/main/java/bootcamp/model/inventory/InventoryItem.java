@@ -1,14 +1,16 @@
 package bootcamp.model.inventory;
 
+import java.math.BigDecimal;
+
 public class InventoryItem {
 	
 	private int id;
 	private int number_available;
-	private double retail_price;
+	private BigDecimal retail_price;
 	
 	public InventoryItem() {}
 	
-	public InventoryItem(int id, int number_available, double retail_price) {
+	public InventoryItem(int id, int number_available, BigDecimal retail_price) {
 		setId(id);
 		setNumber_available(number_available);
 		setRetail_price(retail_price);
@@ -30,11 +32,11 @@ public class InventoryItem {
 		this.number_available = number_available;
 	}
 
-	public double getRetail_price() {
+	public BigDecimal getRetail_price() {
 		return retail_price;
 	}
 
-	public void setRetail_price(double retail_price) {
+	public void setRetail_price(BigDecimal retail_price) {
 		this.retail_price = retail_price;
 	}
 

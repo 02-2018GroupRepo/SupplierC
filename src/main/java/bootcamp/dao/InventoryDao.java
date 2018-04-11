@@ -1,6 +1,5 @@
 package bootcamp.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class InventoryDao {
 	private final String INSERT_INVENTORY = "INSERT INTO inventory VALUES (?,?)";
 	private final String UPDATE_INVENTORY = "UPDATE inventory SET number_available=?";
 	private final String WHERE_INVENTORY = " WHERE id=?";
-	private final String QUANT_INVENTORY = "SELECT number_available FROM inventory WHERE id=?";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
