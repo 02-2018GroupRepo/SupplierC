@@ -26,6 +26,7 @@ public class InventoryDao {
 			"JOIN product\r\n" +
 			"ON inventory.id=product.id";
 	private final String GET_ID_INVENTORY = "SELECT id FROM inventory";
+	private final String GET_QUAN_INVENTORY = "SELECT number_available FROM inventory";
 	private final String INSERT_INVENTORY = "INSERT INTO inventory VALUES (?,?)";
 	private final String UPDATE_INVENTORY = "UPDATE inventory SET number_available=?";
 	private final String WHERE_INVENTORY = " WHERE id=?";
@@ -51,15 +52,17 @@ public class InventoryDao {
 		for(int i = 0; i < products.size(); i++) {
 			check = jdbcTemplate.queryForList(GET_ID_INVENTORY, Integer.class);
 			System.out.println(check);
+			List<Integer> temp = new ArrayList<>();
 			int quantity = 0;
 			
-			for(int j = 0; j < invoice.getItems().size(); j++) {
-				if(products.get(i).getId() == invoice.getItems().get(i).getProduct().getId())
-					quantity = invoice.getItems().get(i).getCount();
-			}
-			
-			
 			if(check.contains(products.get(i).getId())) {
+				for(int j = 0; j < invoice.getItems().size(); j++) {
+					if(products.get(i).getId() == invoice.getItems().get(j).getProduct().getId()) {
+						temp = jdbcTemplate.queryForList(GET_QUAN_INVENTORY + WHERE_INVENTORY, new Object[] {products.get(i).getId()}, Integer.class);
+						quantity = invoice.getItems().get(j).getCount() + temp.get(0);
+						break;
+					}
+				}
 				jdbcTemplate.update(UPDATE_INVENTORY 
 						+ WHERE_INVENTORY, new Object[] {quantity, products.get(i).getId()});
 			} else {
