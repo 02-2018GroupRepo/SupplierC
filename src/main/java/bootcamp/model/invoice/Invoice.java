@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Invoice {
 	
+	private int invoiceId;
 	private int id;
 	private List<InvoiceItem> items;
 	private double total = 0d;
@@ -49,5 +50,13 @@ public class Invoice {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public int getInvoiceId() {
+		return invoiceId;
+	}
+	
+	public void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
 	}
 }

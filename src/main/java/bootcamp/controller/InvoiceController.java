@@ -1,5 +1,7 @@
 package bootcamp.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +54,8 @@ public class InvoiceController {
 	
 	// get the money
 	@RequestMapping("/payment")
-	public void payment(double cash) {
-		invoiceService.payment(cash);
+	public Boolean payment(Payment payment) {
+		return invoiceService.payment(payment);	
 	}
 	
 	// get an order from vendor
@@ -67,7 +69,7 @@ public class InvoiceController {
 	// pay resupply cause they are jerks
 	public void payReSupply(String uri, double cashGoingOut, int id) {
 		log.info(uri);
-		Payment payment = new Payment(cashGoingOut);
+		Payment payment = new Payment(new BigDecimal(cashGoingOut));
 		try {
 		restTemplate.postForObject(uri, payment, Payment.class);
 		} catch (Exception e) {

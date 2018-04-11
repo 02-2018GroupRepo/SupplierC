@@ -1,25 +1,27 @@
 package bootcamp.model.payment;
 
+import java.math.BigDecimal;
+
 public class Payment {
 	
-	private double payment;
+	private BigDecimal payment;
 	private int id;
 
-	public Payment(double payment) {
+	public Payment(BigDecimal payment) {
 		this.payment = payment;
 		id = 001;
 	}
 	
-	public Payment(double payment, int id) {
+	public Payment(BigDecimal payment, int id) {
 		this.payment = payment;
 		this.id = id;
 	}
 	
-	public double getPayment() {
+	public BigDecimal getPayment() {
 		return payment;
 	}
 
-	public void setPayment(double payment) {
+	public void setPayment(BigDecimal payment) {
 		this.payment = payment;
 	}
 

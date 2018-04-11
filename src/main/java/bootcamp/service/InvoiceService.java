@@ -1,5 +1,7 @@
 package bootcamp.service;
 
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import bootcamp.dao.ProductDao;
 import bootcamp.model.invoice.Invoice;
 import bootcamp.model.invoice.InvoiceItem;
 import bootcamp.model.order.Order;
+import bootcamp.model.payment.Payment;
 
 @Component
 public class InvoiceService {
@@ -28,6 +31,9 @@ public class InvoiceService {
 	@Autowired
 	InvoiceController invoiceController;
 	
+	@Autowired
+	HashMap<Integer,Invoice> map;
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Bean //what annotation goes here to make this happen automatically??
@@ -40,6 +46,10 @@ public class InvoiceService {
 		return new double[] {cashOnHand, inventoryService.getInventoryValue()};
 	}
 	
+	@Bean
+	public HashMap<Integer,Invoice> getMap() {
+		return map;
+	}
 	
 	// process invoice from resupplier, not for vendors
 	public void processInvoice(Invoice invoice) {
@@ -64,8 +74,18 @@ public class InvoiceService {
 	}
 
 	//take in money from vendors
-	public void payment(double newMoney) {
-		cashOnHand += newMoney;
+	public Boolean payment(Payment payment) {
+		if (payment.getPayment().doubleValue() == map.get(payment.getId()).getTotal()) {
+			cashOnHand += payment.getPayment().doubleValue();
+			int temp = inventoryDao.getProductQuantity(payment.getId()) - map.get(payment.getId()).getQuantity();
+			inventoryDao.setProductQuantity(payment.getId(), temp);
+			return new Boolean(true);
+		}
+		else {
+			log.info("Payment from ID " + payment.getId() + "rejected.");
+			return new Boolean(false);
+		}
+			
 	}
 	
 	// for us to pay resuppliers
@@ -80,8 +100,17 @@ public class InvoiceService {
 	public Invoice order(Order order) {
 		Invoice invoice = new Invoice();
 		invoice.setId(order.getId());
-		invoice.setQuantity(order.getQuantity());
+		
+		// get quantity from inventory
+		if (inventoryDao.getProductQuantity(order.getId()) < order.getQuantity())
+			invoice.setQuantity(inventoryDao.getProductQuantity(order.getId()));
+		else
+			invoice.setQuantity(order.getQuantity());
+		
+		// get retail price from products
 		invoice.setTotal(productDao.getPriceOfProduct(order.getId()) * order.getQuantity());
+		
+		map.put(invoice.getId(), invoice);
 		return invoice;
 	}
 

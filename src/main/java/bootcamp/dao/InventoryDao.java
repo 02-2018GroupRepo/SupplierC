@@ -79,4 +79,14 @@ public class InventoryDao {
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
+	
+	public int getProductQuantity(int productId) {
+		return jdbcTemplate.queryForObject(GET_QUAN_INVENTORY + WHERE_INVENTORY, 
+				new Object[] {productId}, Integer.class);
+	}
+	
+	public void setProductQuantity(int id, int count) {
+		jdbcTemplate.update(UPDATE_INVENTORY + WHERE_INVENTORY, new Object[] {count, id});
+	}
+	
 }
