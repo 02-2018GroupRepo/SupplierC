@@ -7,6 +7,8 @@ public class Payment {
 	private BigDecimal payment;
 	private int id;
 
+	public Payment() {}
+	
 	public Payment(BigDecimal payment) {
 		this.payment = payment;
 		id = 001;

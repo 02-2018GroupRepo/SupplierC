@@ -24,15 +24,12 @@ public class InvoiceService {
 	ProductDao productDao;
 	@Autowired
 	InventoryDao inventoryDao;
-	
 	@Autowired
 	double cashOnHand;
-	
 	@Autowired
 	InvoiceController invoiceController;
-	
-	@Autowired
-	HashMap<Integer,Invoice> map;
+
+	HashMap<Integer,Invoice> map = new HashMap<>();
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	

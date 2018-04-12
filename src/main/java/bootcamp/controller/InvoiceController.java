@@ -34,8 +34,9 @@ public class InvoiceController {
 
 	
 	// for finance
-	@RequestMapping("/operatingcash")
+	@RequestMapping("/company")
 	public double[] getOperatingCash() {
+		log.info("Sending Financial Information..........");
 		return invoiceService.getOperatingCash();
 	}	
 	
